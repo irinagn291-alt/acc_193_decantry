@@ -299,6 +299,7 @@ struct DecantSettingsView: View {
     @State private var displayName = ""
     @State private var temp = ""
     @State private var currency = ""
+    @State private var isShowingContactUs = false
 
     var body: some View {
         ScrollView {
@@ -325,10 +326,13 @@ struct DecantSettingsView: View {
                 }
 
                 DecantChrome.SettingsBlock(title: "About") {
-                    Text("Decantry — offline home cellar desk.")
-                        .font(.system(size: 15, design: .serif))
-                        .foregroundStyle(palette.secondaryText)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    VStack(alignment: .leading, spacing: 14) {
+                        Text("Decantry — offline home cellar desk.")
+                            .font(.system(size: 15, design: .serif))
+                            .foregroundStyle(palette.secondaryText)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        DecantChrome.primaryButton("Contact Us") { isShowingContactUs = true }
+                    }
                 }
 
                 DecantChrome.SettingsBlock(title: "Backup") {
@@ -355,6 +359,11 @@ struct DecantSettingsView: View {
         .background { DecantAtmosphere() }
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $isShowingContactUs) {
+            NavigationStack {
+                ContactUsWebView()
+            }
+        }
         .onAppear {
             if let profile = environment.cellarProfile {
                 displayName = profile.displayName
